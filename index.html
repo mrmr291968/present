@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PereHUB</title>
+<style>
+:root{--bg:#09090b;--panel:#151519;--panel2:#1d1d22;--pink:#ff2b8a;--pink2:#ff65ad;--text:#fff;--muted:#aaa;--line:#303038}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.header{height:64px;background:#0e0e11;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 18px;gap:22px;position:sticky;top:0;z-index:20}
+.logo{font-size:25px;font-weight:900}.logo b{color:var(--pink)}
+.sidebar{display:flex;gap:5px}.sidebtn{padding:9px 12px;border-radius:8px;color:#ddd;background:transparent;border:1px solid transparent}.sidebtn:hover,.sidebtn.active{background:var(--panel2);border-color:var(--line)}.ghost{background:transparent;color:#ddd;border:1px solid var(--line);padding:9px 13px;border-radius:8px}
+.nav button:hover,.ghost:hover{background:var(--panel2)}
+.user{margin-left:auto;color:var(--muted)}
+main{max-width:1250px;margin:auto;padding:24px}
+.hero{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:24px}
+.hero h1{margin:0;font-size:30px}.hero p{color:var(--muted)}
+.pink{border:0;background:var(--pink);color:white;font-weight:bold;padding:11px 16px;border-radius:8px}
+.pink:hover{background:var(--pink2)}
+.toolbar{display:flex;gap:10px;margin-bottom:18px}
+input,select{background:var(--panel);color:white;border:1px solid var(--line);padding:12px;border-radius:8px;outline:none}
+#search{flex:1}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.thumb{height:155px;background:#030303;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.thumb img,.thumb video{width:100%;height:100%;object-fit:cover}
+.body{padding:11px}.title{font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta{font-size:12px;color:var(--muted);margin-top:5px}
+.actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}.actions button{background:transparent;color:#ddd;border:1px solid var(--line);border-radius:7px;padding:7px 9px;font-size:12px}
+.empty{text-align:center;color:var(--muted);padding:50px;grid-column:1/-1}
+.modal,.viewer{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:50;display:flex;align-items:center;justify-content:center;padding:20px}
+.modalbox{width:min(440px,100%);background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px}
+.modalbox input{width:100%;margin:8px 0}
+.modalbox button{margin:5px 4px 0 0}
+.viewer{flex-direction:column}.viewer img,.viewer video{max-width:95vw;max-height:80vh}
+.close{position:absolute;right:20px;top:10px;background:transparent;color:white;border:0;font-size:42px}
+.viewer h2{font-size:18px}
+.playlists{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.playlist{background:var(--panel);border:1px solid var(--line);padding:16px;border-radius:10px}
+.playlist h3{margin-top:0}
+[hidden]{display:none!important}
+@media(max-width:650px){
+ .header{padding:0 10px}.nav{display:none}.user{display:none}main{padding:14px}
+ .hero h1{font-size:24px}.hero{align-items:flex-start}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.thumb{height:115px}
+ .body{padding:9px}.toolbar select{width:105px}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">Pere<b>HUB</b></div>
+  <aside class="sidebar">
+    <button class="sidebtn active" onclick="setFilter('all');showPage('home');this.blur()">🏠 Início</button>
+    <button class="sidebtn" onclick="setFilter('video');showPage('home');this.blur()">🎬 Vídeos</button>
+    <button class="sidebtn" onclick="setFilter('image');showPage('home');this.blur()">🖼️ Fotos</button>
+    <button class="sidebtn" onclick="showPage('playlists');this.blur()">📁 Playlists</button>
+  </aside>
+  <span class="user" id="userText"></span>
+  <button class="ghost" id="backupBtn" onclick="backupSite()">💾 Backup</button>
+  <button class="ghost" onclick="closeSite()">Fechar</button>
+</header>
+
+<main>
+<section id="home">
+  <div class="hero">
+    <div>
+      <h1>Minha biblioteca</h1>
+      <p>Fotos e vídeos organizados em um só lugar.</p>
+    </div>
+    <button class="pink" onclick="openUpload()">＋ Adicionar mídia</button>
+  </div>
+
+  <div class="toolbar">
+    <input id="search" placeholder="Pesquisar por nome..." oninput="render()">
+    <select id="filter" onchange="render()">
+      <option value="all">Tudo</option>
+      <option value="video">Vídeos</option>
+      <option value="image">Fotos</option>
+    </select>
+  </div>
+
+  <div id="grid" class="grid"></div>
+</section>
+
+<section id="playlists" hidden>
+  <div class="hero">
+    <div><h1>Playlists</h1><p>Organize seus vídeos e fotos.</p></div>
+    <button class="pink" onclick="newPlaylist()">＋ Nova playlist</button>
+  </div>
+  <div id="playlistGrid" class="playlists"></div>
+</section>
+</main>
+
+<div id="uploadModal" class="modal" hidden>
+  <div class="modalbox">
+    <h2>Adicionar mídia</h2>
+    <input id="file" type="file" accept="image/*,video/*">
+    <input id="title" placeholder="Nome da mídia">
+    <button class="pink" onclick="saveMedia()">Salvar</button>
+    <button class="ghost" onclick="closeUpload()">Cancelar</button>
+  </div>
+</div>
+
+<div id="viewer" class="viewer" hidden>
+  <button class="close" onclick="closeViewer()">×</button>
+  <div id="viewerContent"></div>
+  <h2 id="viewerTitle"></h2>
+</div>
+
+<input id="restoreInput" type="file" accept=".perehub,.zip" hidden onchange="restoreSite(event)">
+<script>
+/*
+  PEREHUB - versão somente index.html
+
+  Os dados ficam no localStorage e os arquivos ficam no IndexedDB.
+  Isso permite abrir o index.html diretamente no navegador.
+  Como é HTML puro, os arquivos NÃO são sincronizados automaticamente
+  entre computadores/celulares diferentes.
+*/
+
+const DB_NAME="PereHUB_DB", STORE="media";
+let db;
+let media=[];
+let playlists=JSON.parse(localStorage.getItem("perehub_playlists")||"[]");
+
+function openDB(){
+ return new Promise((resolve,reject)=>{
+  const req=indexedDB.open(DB_NAME,1);
+  req.onupgradeneeded=e=>e.target.result.createObjectStore(STORE,{keyPath:"id"});
+  req.onsuccess=e=>{db=e.target.result;resolve()};
+  req.onerror=()=>reject(req.error);
+ });
+}
+function getAll(){
+ return new Promise((resolve,reject)=>{
+  const req=db.transaction(STORE,"readonly").objectStore(STORE).getAll();
+  req.onsuccess=()=>resolve(req.result.sort((a,b)=>b.created-a.created));
+  req.onerror=()=>reject(req.error);
+ });
+}
+function put(item){
+ return new Promise((resolve,reject)=>{
+  const req=db.transaction(STORE,"readwrite").objectStore(STORE).put(item);
+  req.onsuccess=resolve;req.onerror=()=>reject(req.error);
+ });
+}
+function remove(id){
+ return new Promise((resolve,reject)=>{
+  const req=db.transaction(STORE,"readwrite").objectStore(STORE).delete(id);
+  req.onsuccess=resolve;req.onerror=()=>reject(req.error);
+ });
+}
+
+async function init(){
+ await openDB();
+ media=await getAll();
+ render();
+ renderPlaylists();
+ document.getElementById("userText").textContent="Modo local";
+}
+function setFilter(v){document.getElementById("filter").value=v;render()}
+function showPage(page){
+ document.getElementById("home").hidden=page!=="home";
+ document.getElementById("playlists").hidden=page!=="playlists";
+ if(page==="playlists")renderPlaylists();
+}
+function openUpload(){
+ document.getElementById("uploadModal").hidden=false;
+ document.getElementById("file").value="";
+ document.getElementById("title").value="";
+}
+function closeUpload(){document.getElementById("uploadModal").hidden=true}
+
+async function saveMedia(){
+ const file=document.getElementById("file").files[0];
+ if(!file){alert("Escolha uma foto ou vídeo.");return}
+ if(!file.type.startsWith("image/")&&!file.type.startsWith("video/")){
+  alert("Escolha uma imagem ou vídeo.");return
+ }
+ const title=document.getElementById("title").value.trim()||
+ file.name.replace(/\.[^.]+$/,"")||"Sem título";
+ await put({
+  id:crypto.randomUUID(),
+  title:title.slice(0,120),
+  name:file.name,
+  type:file.type.startsWith("video/")?"video":"image",
+  blob:file,
+  created:Date.now()
+ });
+ media=await getAll();
+ closeUpload();
+ render();
+}
+
+function render(){
+ const q=document.getElementById("search").value.toLowerCase();
+ const f=document.getElementById("filter").value;
+ const list=media.filter(m=>
+  (f==="all"||m.type===f)&&
+  (m.title.toLowerCase().includes(q)||m.name.toLowerCase().includes(q))
+ );
+ const grid=document.getElementById("grid");
+ grid.innerHTML="";
+ if(!list.length){
+  grid.innerHTML='<div class="empty">Nenhuma mídia encontrada.</div>';return;
+ }
+ list.forEach(m=>{
+  const url=URL.createObjectURL(m.blob);
+  const card=document.createElement("article");card.className="card";
+  const thumb=document.createElement("div");thumb.className="thumb";
+  if(m.type==="video"){
+   const v=document.createElement("video");
+   v.src=url;v.muted=true;v.preload="metadata";thumb.appendChild(v);
+  }else{
+   const img=document.createElement("img");img.src=url;thumb.appendChild(img);
+  }
+  const body=document.createElement("div");body.className="body";
+  const title=document.createElement("div");title.className="title";title.textContent=m.title;
+  const meta=document.createElement("div");meta.className="meta";
+  meta.textContent=m.type==="video"?"Vídeo":"Foto";
+  const actions=document.createElement("div");actions.className="actions";
+
+  const open=document.createElement("button");open.textContent="Abrir";
+  open.onclick=()=>openViewer(m);
+  const add=document.createElement("button");add.textContent="+ Playlist";
+  add.onclick=()=>addToPlaylist(m.id);
+  const del=document.createElement("button");del.textContent="Apagar";
+  del.onclick=async()=>{
+   if(confirm("Apagar esta mídia?")){
+    await remove(m.id);media=await getAll();render();
+   }
+  };
+
+  actions.append(open,add,del);
+  body.append(title,meta,actions);card.append(thumb,body);grid.append(card);
+ });
+}
+
+function openViewer(m){
+ const url=URL.createObjectURL(m.blob);
+ document.getElementById("viewerTitle").textContent=m.title;
+ const c=document.getElementById("viewerContent");
+ c.innerHTML="";
+ if(m.type==="video"){
+  const v=document.createElement("video");
+  v.src=url;v.controls=true;v.autoplay=true;v.playsInline=true;c.appendChild(v);
+ }else{
+  const img=document.createElement("img");img.src=url;c.appendChild(img);
+ }
+ document.getElementById("viewer").hidden=false;
+}
+function closeViewer(){
+ document.getElementById("viewer").hidden=true;
+ document.getElementById("viewerContent").innerHTML="";
+}
+
+function newPlaylist(){
+ const name=prompt("Nome da playlist:");
+ if(!name)return;
+ playlists.push({id:crypto.randomUUID(),name:name.trim(),items:[]});
+ localStorage.setItem("perehub_playlists",JSON.stringify(playlists));
+ renderPlaylists();
+}
+function addToPlaylist(mediaId){
+ if(!playlists.length){alert("Crie uma playlist primeiro.");return}
+ const text=playlists.map((p,i)=>(i+1)+" - "+p.name).join("\n");
+ const n=prompt("Escolha o número da playlist:\n\n"+text);
+ const p=playlists[Number(n)-1];
+ if(!p)return;
+ if(!p.items.includes(mediaId))p.items.push(mediaId);
+ localStorage.setItem("perehub_playlists",JSON.stringify(playlists));
+ renderPlaylists();
+ alert("Adicionado à playlist.");
+}
+function renderPlaylists(){
+ const box=document.getElementById("playlistGrid");box.innerHTML="";
+ if(!playlists.length){box.innerHTML='<div class="empty">Nenhuma playlist criada.</div>';return}
+ playlists.forEach(p=>{
+  const el=document.createElement("div");el.className="playlist";
+  const h=document.createElement("h3");h.textContent=p.name;
+  const count=document.createElement("div");count.className="meta";count.textContent=p.items.length+" item(ns)";
+  el.append(h,count);
+  p.items.forEach(id=>{
+   const m=media.find(x=>x.id===id);if(!m)return;
+   const b=document.createElement("button");b.className="ghost";b.style.margin="7px 5px 0 0";b.textContent=m.title;
+   b.onclick=()=>openViewer(m);el.appendChild(b);
+  });
+  box.appendChild(el);
+ });
+}
+function closeSite(){
+ window.close();
+ setTimeout(()=>{
+  document.body.innerHTML='<main style="padding:40px"><h1>PereHUB fechado</h1><p>O navegador pode bloquear o fechamento de uma aba aberta manualmente. Nesse caso, feche a aba normalmente.</p></main>';
+ },300);
+}
+
+async function backupSite(){
+  try{
+    media=await getAll();
+    const payload={
+      format:"PereHUB Backup",
+      version:1,
+      createdAt:new Date().toISOString(),
+      playlists:playlists,
+      media:media.map(m=>({
+        id:m.id,title:m.title,name:m.name,type:m.type,created:m.created,
+        mime:m.blob.type,size:m.blob.size
+      }))
+    };
+
+    // A JSON manifest plus the actual media blobs are stored in a ZIP.
+    // This folder/ZIP can be kept and imported into a future version.
+    const zipParts=[];
+    zipParts.push("PereHUB_BACKUP_MANIFEST.json\n"+JSON.stringify(payload,null,2)+"\n\n");
+    for(const m of media){
+      const buf=await m.blob.arrayBuffer();
+      zipParts.push({name:"media/"+m.id+"_"+safeBackupName(m.name),data:new Uint8Array(buf)});
+    }
+
+    // Use the browser's CompressionStream when available.
+    // For maximum compatibility, create a portable backup as a .perehub JSON
+    // containing binary data encoded as base64.
+    const manifest={
+      format:"PereHUB Backup",
+      version:1,
+      createdAt:new Date().toISOString(),
+      playlists:playlists,
+      media:[]
+    };
+    for(const m of media){
+      manifest.media.push({
+        id:m.id,title:m.title,name:m.name,type:m.type,created:m.created,
+        mime:m.blob.type,size:m.blob.size,
+        data:await blobToBase64(m.blob)
+      });
+    }
+
+    const blob=new Blob([JSON.stringify(manifest)],{type:"application/json"});
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    a.download="PereHUB_Backup_"+new Date().toISOString().slice(0,10)+".perehub";
+    a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  }catch(e){
+    alert("Não foi possível criar o backup: "+e.message);
+  }
+}
+
+function safeBackupName(name){
+  return String(name||"arquivo").replace(/[\\/:*?"<>|]/g,"_");
+}
+function blobToBase64(blob){
+  return new Promise((resolve,reject)=>{
+    const r=new FileReader();
+    r.onload=()=>resolve(String(r.result).split(",")[1]||"");
+    r.onerror=()=>reject(r.error);
+    r.readAsDataURL(blob);
+  });
+}
+function base64ToBlob(base64,mime){
+  const bin=atob(base64), arr=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);
+  return new Blob([arr],{type:mime||"application/octet-stream"});
+}
+
+async function restoreSite(event){
+  const file=event.target.files[0];
+  if(!file)return;
+  try{
+    const text=await file.text();
+    const backup=JSON.parse(text);
+    if(backup.format!=="PereHUB Backup" || !Array.isArray(backup.media))
+      throw new Error("Arquivo de backup inválido.");
+
+    for(const m of backup.media){
+      await put({
+        id:m.id,title:m.title,name:m.name,type:m.type,
+        created:m.created,blob:base64ToBlob(m.data,m.mime)
+      });
+    }
+    playlists=Array.isArray(backup.playlists)?backup.playlists:[];
+    localStorage.setItem("perehub_playlists",JSON.stringify(playlists));
+    media=await getAll();
+    render();renderPlaylists();
+    alert("Backup restaurado! Agora você pode continuar usando esta versão do PereHUB.");
+  }catch(e){
+    alert("Não foi possível restaurar o backup: "+e.message);
+  }finally{
+    event.target.value="";
+  }
+}
+
+function importBackup(){
+  document.getElementById("restoreInput").click();
+}
+
+if(document.getElementById("backupBtn")){
+  const b=document.getElementById("backupBtn");
+  const r=document.createElement("button");
+  r.className="ghost"; r.textContent="↩ Restaurar";
+  r.onclick=importBackup;
+  b.parentNode.insertBefore(r,b.nextSibling);
+}
+init();
+</script>
+</body>
+</html>
