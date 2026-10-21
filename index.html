@@ -25,6 +25,20 @@
     .eyebrow{letter-spacing:.4px;text-transform:none;font-weight:600}
     .note-text{margin:8px 0 0;color:#e9bfd0;font-family:Georgia,serif;font-size:13px;font-style:italic;overflow-wrap:anywhere}
     .hero-buttons{display:flex;gap:8px;flex-wrap:wrap}
+    .ideas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:13px}
+    .idea-card{padding:16px;border:1px solid #ffffff14;border-radius:11px;background:#1b191e}
+    .idea-card h3{margin:7px 0 5px;font-family:Georgia,serif;font-size:19px;font-weight:500}
+    .idea-card p{margin:0;color:var(--muted);font-size:13px}
+    .idea-category{color:#f28ab0;font-size:11px}
+    .idea-actions{display:flex;gap:7px;margin-top:13px}
+    .idea-actions button{border:1px solid var(--line);border-radius:8px;padding:7px 9px;background:#ffffff05;color:#eee6ef;font-size:12px}
+    .idea-actions button:hover{border-color:#825268}
+    .idea-spotlight{margin:0 0 18px;padding:17px;border:1px solid #825268;border-radius:11px;background:#211820}
+    .idea-spotlight h2{margin:5px 0;font-family:Georgia,serif;font-weight:500}
+    .idea-spotlight p{margin:0;color:var(--muted)}
+    .guide{max-width:760px;padding:20px;border:1px solid #ffffff14;border-radius:11px;background:#1b191e}
+    .guide h2{font-family:Georgia,serif;font-weight:500}
+    .guide li{margin:10px 0;color:var(--muted)}
     @media(max-width:700px){.hero-buttons{width:100%}.hero-buttons button{flex:1}}
   </style>
 </head>
@@ -37,9 +51,12 @@
       <button id="nav-image" onclick="showPage('home','image')">▧ Fotos</button>
       <button id="nav-fav" onclick="showPage('home','favorites')">♡ Favoritos</button>
       <button id="nav-playlists" onclick="showPage('playlists')">▤ Playlists</button>
+      <button id="nav-ideas" onclick="showPage('ideas')">💡 Ideias</button>
+      <button id="nav-help" onclick="showPage('help')">? Como funciona</button>
     </nav>
     <div class="top-actions">
       <span class="local-pill">● Salvo neste aparelho</span>
+      <button class="secondary" onclick="surpriseIdea()" title="Abrir uma ideia aleatória">💌 Me surpreende</button>
       <button class="secondary" onclick="importBackup()" title="Restaurar backup">↥ Restaurar</button>
       <button class="secondary" onclick="backupSite()" title="Baixar backup">↧ Backup</button>
     </div>
@@ -49,7 +66,7 @@
     <section id="home">
       <div class="hero">
         <div><p class="eyebrow">PereHUB · só a gente</p><h1>Fotos nossas ♡</h1><p>Um lugarzinho pra guardar as coisas boas.</p></div>
-        <div class="hero-buttons"><button class="secondary" onclick="randomMemory()">🎲 Me surpreende</button><button class="primary" onclick="openUpload()">＋ Guardar foto ou vídeo</button></div>
+        <div class="hero-buttons"><button class="primary" onclick="openUpload()">＋ Guardar foto ou vídeo</button></div>
       </div>
       <div class="toolbar">
         <label class="search-wrap"><span>⌕</span><input id="search" type="search" placeholder="Buscar por nome…" oninput="render()" aria-label="Buscar mídia"></label>
@@ -62,6 +79,38 @@
       <div class="hero"><div><p class="eyebrow">PereHUB · coleções</p><h1>Playlists</h1><p>Junte os favoritos em um só lugar.</p></div><button class="primary" onclick="newPlaylist()">＋ Nova playlist</button></div>
       <div id="playlistGrid" class="playlist-grid"></div>
     </section>
+    <section id="ideasPage" hidden>
+      <div class="hero"><div><p class="eyebrow">pra quando bater o “o que a gente grava?”</p><h1>Ideias de vídeo</h1><p>Escolham uma ideia, adaptem do jeito de vocês e gravem se der vontade.</p></div><div class="hero-buttons"><button class="secondary" onclick="openIdeaForm()">＋ Minha ideia</button><button class="primary" onclick="drawVideoIdea()">🎲 Sortear ideia</button></div></div>
+      <div id="ideaSpotlight" class="idea-spotlight" hidden></div>
+      <div class="toolbar">
+        <select id="ideaCategory" onchange="renderIdeas()" aria-label="Filtrar ideias"><option value="all">Todas as categorias</option><option value="Casal">Casal</option><option value="Flerte">Flerte</option><option value="Desafio">Desafio</option><option value="Memórias">Memórias</option><option value="Roblox">Roblox</option><option value="Outra">Outra</option></select>
+        <button id="savedIdeasBtn" class="secondary" onclick="toggleSavedIdeas()">♡ Só as salvas</button>
+      </div>
+      <div id="ideasGrid" class="ideas-grid"></div>
+    </section>
+    <section id="helpPage" hidden>
+      <div class="hero"><div><p class="eyebrow">guia rápido</p><h1>Como funciona</h1><p>Um resumo para você saber onde ficam suas coisas.</p></div></div>
+      <div class="guide">
+        <h2>Suas fotos e vídeos</h2>
+        <ul>
+          <li>Use <strong>Guardar foto ou vídeo</strong> para adicionar uma mídia. Ela fica guardada neste navegador e aparelho.</li>
+          <li>Favoritos, recadinhos, playlists e ideias próprias também ficam salvos neste aparelho.</li>
+          <li>O site não envia suas mídias para a internet nem sincroniza automaticamente com outros aparelhos.</li>
+        </ul>
+        <h2>Backup</h2>
+        <ul>
+          <li>Toque em <strong>Backup</strong> para baixar um arquivo <code>.perehub</code> com suas mídias e organização.</li>
+          <li>Guarde esse arquivo em um lugar seguro. Para recuperar, abra o PereHUB e use <strong>Restaurar</strong>.</li>
+          <li>Restaurar adiciona os itens do backup à biblioteca que já existe.</li>
+        </ul>
+        <h2>Ideias de vídeo</h2>
+        <ul>
+          <li>Toque em <strong>Minha ideia</strong> para escrever e salvar uma sugestão sua.</li>
+          <li>Use o coração para guardar ideias favoritas. Elas entram no backup junto com as suas ideias próprias.</li>
+          <li>O botão <strong>Me surpreende</strong> escolhe uma sugestão aleatória.</li>
+        </ul>
+      </div>
+    </section>
     <div class="notice"><strong>Privacidade:</strong> os arquivos ficam neste navegador e aparelho. Use <em>Backup</em> para guardar uma cópia; o site não envia as mídias para a internet.</div>
   </main>
 
@@ -73,6 +122,15 @@
       <div class="modal-actions"><button type="button" class="secondary" onclick="closeUpload()">Cancelar</button><button class="primary" type="submit">Salvar mídia</button></div>
     </form>
   </div>
+  <div id="ideaModal" class="modal" hidden>
+    <form class="modalbox" onsubmit="event.preventDefault();saveCustomIdea()">
+      <h2>Sua ideia de vídeo</h2><p>Escreva uma ideia do seu jeito. Ela fica salva neste aparelho.</p>
+      <input id="ideaTitle" class="field" maxlength="70" placeholder="Nome da ideia" required>
+      <select id="ideaNewCategory" class="field"><option>Casal</option><option>Flerte</option><option>Desafio</option><option>Memórias</option><option>Roblox</option><option>Outra</option></select>
+      <textarea id="ideaText" class="field" maxlength="300" rows="4" placeholder="Como seria o vídeo?" required></textarea>
+      <div class="modal-actions"><button type="button" class="secondary" onclick="closeIdeaForm()">Cancelar</button><button class="primary" type="submit">Salvar ideia</button></div>
+    </form>
+  </div>
 
   <div id="viewer" class="viewer" hidden role="dialog" aria-modal="true" aria-label="Visualizador de mídia">
     <button class="close" onclick="closeViewer()" aria-label="Fechar">×</button><div id="viewerContent"></div><h2 id="viewerTitle"></h2>
@@ -81,7 +139,29 @@
 
   <script>
     const DB_NAME='PereHUB_DB', STORE='media', FAV_KEY='perehub_favorites';
-    let db, media=[], playlists=readJSON('perehub_playlists',[]), favorites=new Set(readJSON(FAV_KEY,[])), notes=readJSON('perehub_notes',{}), currentFilter='all', objectUrls=[];
+    let db, media=[], playlists=readJSON('perehub_playlists',[]), favorites=new Set(readJSON(FAV_KEY,[])), notes=readJSON('perehub_notes',{}), savedIdeaIds=new Set(readJSON('perehub_saved_ideas',[])), customIdeas=readJSON('perehub_custom_ideas',[]), currentFilter='all', ideaCategory='all', showOnlySavedIdeas=false, objectUrls=[];
+    const VIDEO_IDEAS=[
+      {id:'draw',category:'Desafio',title:'Desenho sem olhar',text:'Cada um desenha o outro sem tirar os olhos da pessoa. No final, mostrem os desenhos.'},
+      {id:'quiz',category:'Casal',title:'Quem conhece melhor?',text:'Façam cinco perguntas leves um sobre o outro e vejam quem acerta mais.'},
+      {id:'old-photo',category:'Memórias',title:'Recriando uma foto',text:'Escolham uma foto antiga e tentem recriar a pose com o que tiverem por perto.'},
+      {id:'song',category:'Casal',title:'A música que combina',text:'Cada um escolhe uma música que lembra o outro e conta o motivo.'},
+      {id:'snack',category:'Desafio',title:'Lanche surpresa',text:'Cada um monta um lanche simples para o outro experimentar e dar uma nota.'},
+      {id:'story',category:'Memórias',title:'A história por trás',text:'Escolham uma foto da galeria e contem a história daquele dia.'},
+      {id:'avatar',category:'Roblox',title:'Avatar escolhido pelo outro',text:'Cada um monta um avatar para o outro no Roblox e depois vocês mostram o resultado.'},
+      {id:'build',category:'Roblox',title:'Construção contra o tempo',text:'Escolham um tema e tentem construir algo no Roblox em três minutos.'},
+      {id:'voice',category:'Desafio',title:'Adivinha quem falou',text:'Gravem uma frase engraçada com vozes diferentes e tentem adivinhar quem fez cada uma.'},
+      {id:'favorites',category:'Casal',title:'Três coisas favoritas',text:'Cada um fala três coisas simples que gosta de fazer junto.'},
+      {id:'then-now',category:'Memórias',title:'Antes e agora',text:'Compare uma foto antiga com uma de hoje e contem o que mudou desde então.'},
+      {id:'reaction',category:'Roblox',title:'Reação ao jogo do outro',text:'Um escolhe um jogo do Roblox para o outro experimentar pela primeira vez.'},
+      {id:'emoji',category:'Desafio',title:'Adivinhe pelos emojis',text:'Resumam um filme, jogo ou memória usando só emojis para o outro adivinhar.'},
+      {id:'tour',category:'Memórias',title:'Meu cantinho favorito',text:'Mostrem um lugar que gostam e contem por que ele é especial.'},
+      {id:'questions',category:'Casal',title:'Pergunta rápida',text:'Façam perguntas leves em sequência: comida favorita, jogo favorito, lugar para visitar… sem pensar muito.'},
+      {id:'bad-pickup',category:'Flerte',title:'Cantada ruim',text:'Cada um inventa a cantada mais boba que conseguir. Vale mais fazer rir do que impressionar.'},
+      {id:'first-impression',category:'Flerte',title:'Primeira impressão',text:'Contem o que cada um pensou quando conheceu o outro — e o que pensa agora.'},
+      {id:'finish-sentence',category:'Flerte',title:'Completa a frase',text:'Um começa “eu gosto quando você…” e o outro tenta adivinhar como a frase termina.'},
+      {id:'compliment',category:'Flerte',title:'Elogio surpresa',text:'Cada um fala uma coisa que admira no outro. Tentem não repetir o que já disseram antes.'},
+      {id:'outfit',category:'Roblox',title:'Look temático',text:'Criem um avatar combinando com um tema escolhido na hora e façam um mini desfile.'}
+    ];
     function readJSON(key,fallback){try{const v=JSON.parse(localStorage.getItem(key)||'null');return v??fallback}catch{return fallback}}
     function openDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open(DB_NAME,1);req.onupgradeneeded=e=>{const d=e.target.result;if(!d.objectStoreNames.contains(STORE))d.createObjectStore(STORE,{keyPath:'id'})};req.onsuccess=e=>{db=e.target.result;resolve()};req.onerror=()=>reject(req.error)})}
     function transaction(mode,action){return new Promise((resolve,reject)=>{const tx=db.transaction(STORE,mode),req=action(tx.objectStore(STORE));req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)})}
@@ -89,13 +169,25 @@
     async function init(){try{await openDB();media=(await getAll()).sort((a,b)=>b.created-a.created);render();renderPlaylists()}catch(e){console.error(e);alert('Não consegui abrir a biblioteca neste navegador. Tente abrir o arquivo no Chrome ou Edge.') }}
     function clearUrls(){objectUrls.forEach(URL.revokeObjectURL);objectUrls=[]}
     function makeUrl(blob){const url=URL.createObjectURL(blob);objectUrls.push(url);return url}
-    function showPage(page,filter='all'){document.getElementById('home').hidden=page!=='home';document.getElementById('playlistsPage').hidden=page!=='playlists';currentFilter=filter;document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));const id=page==='playlists'?'nav-playlists':filter==='video'?'nav-video':filter==='image'?'nav-image':filter==='favorites'?'nav-fav':'nav-all';document.getElementById(id).classList.add('active');if(page==='home')render();else renderPlaylists()}
+    function showPage(page,filter='all'){document.getElementById('home').hidden=page!=='home';document.getElementById('playlistsPage').hidden=page!=='playlists';document.getElementById('ideasPage').hidden=page!=='ideas';document.getElementById('helpPage').hidden=page!=='help';currentFilter=filter;document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));const id=page==='playlists'?'nav-playlists':page==='ideas'?'nav-ideas':page==='help'?'nav-help':filter==='video'?'nav-video':filter==='image'?'nav-image':filter==='favorites'?'nav-fav':'nav-all';document.getElementById(id).classList.add('active');if(page==='home')render();else if(page==='playlists')renderPlaylists();else if(page==='ideas')renderIdeas()}
     function openUpload(){document.getElementById('uploadModal').hidden=false;document.getElementById('file').value='';document.getElementById('title').value='';document.getElementById('file').focus()}
     function closeUpload(){document.getElementById('uploadModal').hidden=true}
     async function saveMedia(){const file=document.getElementById('file').files[0];if(!file)return;if(!file.type.startsWith('image/')&&!file.type.startsWith('video/')){alert('Escolha uma imagem ou vídeo.');return}const title=document.getElementById('title').value.trim()||file.name.replace(/\.[^.]+$/,'')||'Sem título';await put({id:crypto.randomUUID(),title:title.slice(0,120),name:file.name,type:file.type.startsWith('video/')?'video':'image',blob:file,created:Date.now()});media=(await getAll()).sort((a,b)=>b.created-a.created);closeUpload();render()}
     function render(){clearUrls();const q=document.getElementById('search').value.trim().toLocaleLowerCase('pt-BR');let list=media.filter(m=>(currentFilter==='all'||currentFilter==='favorites'||m.type===currentFilter)&&(currentFilter!=='favorites'||favorites.has(m.id))&&(m.title.toLocaleLowerCase('pt-BR').includes(q)||m.name.toLocaleLowerCase('pt-BR').includes(q)));const sort=document.getElementById('sort').value;if(sort==='oldest')list.sort((a,b)=>a.created-b.created);if(sort==='az')list.sort((a,b)=>a.title.localeCompare(b.title,'pt-BR'));const countPhotos=media.filter(m=>m.type==='image').length,countVideos=media.filter(m=>m.type==='video').length;document.getElementById('stats').innerHTML=`<strong>${media.length}</strong> ${media.length===1?'item':'itens'} <span class="dot"></span> ${countPhotos} ${countPhotos===1?'foto':'fotos'} <span class="dot"></span> ${countVideos} ${countVideos===1?'vídeo':'vídeos'}`;const grid=document.getElementById('grid');grid.replaceChildren();if(!list.length){const empty=document.createElement('div');empty.className='empty';empty.innerHTML='<div class="emoji">♡</div><h2>'+ (media.length?'Nada por aqui ainda':'Ainda tá vazio por aqui') +'</h2><p>'+ (media.length?'Tenta buscar por outro nome.':'Guarda a primeira foto ou vídeo quando quiser.') +'</p>';if(!media.length){const b=document.createElement('button');b.className='primary';b.style.marginTop='16px';b.textContent='＋ Escolher uma mídia';b.onclick=openUpload;empty.appendChild(b)}grid.appendChild(empty);return}list.forEach(m=>{const card=document.createElement('article');card.className='card';const thumb=document.createElement('div');thumb.className='thumb';const url=makeUrl(m.blob);if(m.type==='video'){const v=document.createElement('video');v.src=url;v.muted=true;v.preload='metadata';thumb.appendChild(v)}else{const img=document.createElement('img');img.src=url;img.alt=m.title;img.loading='lazy';thumb.appendChild(img)}const kind=document.createElement('span');kind.className='kind';kind.textContent=m.type==='video'?'▶ Vídeo':'▧ Foto';const fav=document.createElement('button');fav.className='fav'+(favorites.has(m.id)?' on':'');fav.textContent=favorites.has(m.id)?'♥':'♡';fav.title=favorites.has(m.id)?'Tirar dos favoritos':'Adicionar aos favoritos';fav.onclick=()=>toggleFavorite(m.id);thumb.append(kind,fav);const body=document.createElement('div');body.className='card-body';const title=document.createElement('p');title.className='title';title.textContent=m.title;title.title=m.title;const meta=document.createElement('div');meta.className='meta';meta.textContent=new Intl.DateTimeFormat('pt-BR',{dateStyle:'medium'}).format(new Date(m.created));const actions=document.createElement('div');actions.className='card-actions';const open=document.createElement('button');open.textContent='Abrir';open.onclick=()=>openViewer(m);const add=document.createElement('button');add.textContent='+ Playlist';add.onclick=()=>addToPlaylist(m.id);const memo=document.createElement('button');memo.textContent='✎ Recado';memo.onclick=()=>editNote(m.id);const del=document.createElement('button');del.className='delete';del.textContent='Apagar';del.onclick=()=>deleteMedia(m.id);actions.append(open,add,memo,del);body.append(title,meta);if(notes[m.id]){const note=document.createElement('p');note.className='note-text';note.textContent='“'+notes[m.id]+'”';body.appendChild(note)}body.append(actions);card.append(thumb,body);grid.appendChild(card)})}
     function editNote(id){const current=notes[id]||'';const value=prompt('Deixa um recadinho pra essa lembrança:',current);if(value===null)return;const clean=value.trim().slice(0,180);if(clean)notes[id]=clean;else delete notes[id];localStorage.setItem('perehub_notes',JSON.stringify(notes));render()}
-    function randomMemory(){if(!media.length){alert('Ainda não tem nenhuma foto ou vídeo por aqui.');return}openViewer(media[Math.floor(Math.random()*media.length)])}
+    function toggleSavedIdeas(){showOnlySavedIdeas=!showOnlySavedIdeas;document.getElementById('savedIdeasBtn').textContent=showOnlySavedIdeas?'♥ Mostrando salvas':'♡ Só as salvas';renderIdeas()}
+    function allVideoIdeas(){return [...VIDEO_IDEAS,...customIdeas]}
+    function visibleVideoIdeas(){return allVideoIdeas().filter(i=>(ideaCategory==='all'||i.category===ideaCategory)&&(!showOnlySavedIdeas||savedIdeaIds.has(i.id)))}
+    function showIdea(idea){showPage('ideas');const box=document.getElementById('ideaSpotlight');box.replaceChildren();const tag=document.createElement('span');tag.className='idea-category';tag.textContent=idea.category;const title=document.createElement('h2');title.textContent=idea.title;const desc=document.createElement('p');desc.textContent=idea.text;box.append(tag,title,desc);box.hidden=false}
+    function surpriseIdea(){const ideas=allVideoIdeas();const idea=ideas[Math.floor(Math.random()*ideas.length)];showIdea(idea)}
+    function drawVideoIdea(){const options=visibleVideoIdeas();if(!options.length){alert('Não tem ideia salva nessa categoria ainda.');return}showIdea(options[Math.floor(Math.random()*options.length)])}
+    function saveVideoIdea(id){savedIdeaIds.has(id)?savedIdeaIds.delete(id):savedIdeaIds.add(id);localStorage.setItem('perehub_saved_ideas',JSON.stringify([...savedIdeaIds]));renderIdeas()}
+    async function copyVideoIdea(id){const idea=allVideoIdeas().find(i=>i.id===id);if(!idea)return;const text=idea.title+' — '+idea.text;try{await navigator.clipboard.writeText(text);alert('Ideia copiada!')}catch{prompt('Copie sua ideia:',text)}}
+    function renderIdeas(){const grid=document.getElementById('ideasGrid');if(!grid)return;grid.replaceChildren();visibleVideoIdeas().forEach(idea=>{const card=document.createElement('article');card.className='idea-card';const cat=document.createElement('span');cat.className='idea-category';cat.textContent=idea.category;const title=document.createElement('h3');title.textContent=idea.title;const text=document.createElement('p');text.textContent=idea.text;const actions=document.createElement('div');actions.className='idea-actions';const save=document.createElement('button');save.textContent=savedIdeaIds.has(idea.id)?'♥ Salva':'♡ Salvar';save.onclick=()=>saveVideoIdea(idea.id);const copy=document.createElement('button');copy.textContent='Copiar ideia';copy.onclick=()=>copyVideoIdea(idea.id);actions.append(save,copy);if(idea.userMade){const del=document.createElement('button');del.textContent='Apagar';del.onclick=()=>deleteCustomIdea(idea.id);actions.appendChild(del)}card.append(cat,title,text,actions);grid.appendChild(card)});if(!grid.children.length){grid.innerHTML='<div class="empty"><div class="emoji">💡</div><h2>Nenhuma ideia salva aqui ainda</h2><p>Salve alguma ideia para encontrar depois.</p></div>'}}
+    function openIdeaForm(){document.getElementById('ideaModal').hidden=false;document.getElementById('ideaTitle').value='';document.getElementById('ideaText').value='';document.getElementById('ideaTitle').focus()}
+    function closeIdeaForm(){document.getElementById('ideaModal').hidden=true}
+    function saveCustomIdea(){const title=document.getElementById('ideaTitle').value.trim(),text=document.getElementById('ideaText').value.trim(),category=document.getElementById('ideaNewCategory').value;if(!title||!text)return;customIdeas.unshift({id:'custom-'+crypto.randomUUID(),title:title.slice(0,70),text:text.slice(0,300),category,userMade:true});localStorage.setItem('perehub_custom_ideas',JSON.stringify(customIdeas));closeIdeaForm();renderIdeas()}
+    function deleteCustomIdea(id){if(!confirm('Apagar esta ideia?'))return;customIdeas=customIdeas.filter(i=>i.id!==id);savedIdeaIds.delete(id);localStorage.setItem('perehub_custom_ideas',JSON.stringify(customIdeas));localStorage.setItem('perehub_saved_ideas',JSON.stringify([...savedIdeaIds]));renderIdeas()}
     function toggleFavorite(id){favorites.has(id)?favorites.delete(id):favorites.add(id);localStorage.setItem(FAV_KEY,JSON.stringify([...favorites]));render()}
     async function deleteMedia(id){if(!confirm('Apagar esta mídia da biblioteca?'))return;await remove(id);media=media.filter(m=>m.id!==id);favorites.delete(id);delete notes[id];localStorage.setItem(FAV_KEY,JSON.stringify([...favorites]));localStorage.setItem('perehub_notes',JSON.stringify(notes));playlists.forEach(p=>p.items=p.items.filter(i=>i!==id));savePlaylists();render();renderPlaylists()}
     function openViewer(m){const c=document.getElementById('viewerContent');c.replaceChildren();const url=makeUrl(m.blob);if(m.type==='video'){const v=document.createElement('video');v.src=url;v.controls=true;v.autoplay=true;v.playsInline=true;c.appendChild(v)}else{const img=document.createElement('img');img.src=url;img.alt=m.title;c.appendChild(img)}document.getElementById('viewerTitle').textContent=m.title;document.getElementById('viewer').hidden=false}
@@ -107,9 +199,9 @@
     function importBackup(){document.getElementById('restoreInput').click()}
     function blobToBase64(blob){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result).split(',')[1]||'');r.onerror=()=>reject(r.error);r.readAsDataURL(blob)})}
     function base64ToBlob(data,mime){const bin=atob(data),arr=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);return new Blob([arr],{type:mime||'application/octet-stream'})}
-    async function backupSite(){try{const entries=[];for(const m of media)entries.push({id:m.id,title:m.title,name:m.name,type:m.type,created:m.created,mime:m.blob.type,size:m.blob.size,data:await blobToBase64(m.blob)});const payload={format:'PereHUB Backup',version:1,createdAt:new Date().toISOString(),playlists,notes,media:entries};const blob=new Blob([JSON.stringify(payload)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`PereHUB_Backup_${new Date().toISOString().slice(0,10)}.perehub`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}catch(e){alert('Não consegui criar o backup: '+e.message)}}
-    async function restoreSite(event){const file=event.target.files[0];if(!file)return;try{const backup=JSON.parse(await file.text());if(backup.format!=='PereHUB Backup'||!Array.isArray(backup.media))throw new Error('Esse arquivo não parece ser um backup PereHUB válido.');for(const m of backup.media){if(!m.id||!m.data)continue;await put({id:m.id,title:m.title||m.name||'Sem título',name:m.name||'arquivo',type:m.type==='video'?'video':'image',created:Number(m.created)||Date.now(),blob:base64ToBlob(m.data,m.mime)})}media=(await getAll()).sort((a,b)=>b.created-a.created);if(Array.isArray(backup.playlists)){playlists=backup.playlists;savePlaylists()}if(backup.notes&&typeof backup.notes==='object'){notes=backup.notes;localStorage.setItem('perehub_notes',JSON.stringify(notes))}render();renderPlaylists();alert('Backup restaurado com sucesso!')}catch(e){alert('Não consegui restaurar: '+e.message)}finally{event.target.value=''}}
-    document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeUpload();closeViewer()}});
+    async function backupSite(){try{const entries=[];for(const m of media)entries.push({id:m.id,title:m.title,name:m.name,type:m.type,created:m.created,mime:m.blob.type,size:m.blob.size,data:await blobToBase64(m.blob)});const payload={format:'PereHUB Backup',version:1,createdAt:new Date().toISOString(),playlists,notes,savedIdeas:[...savedIdeaIds],customIdeas,media:entries};const blob=new Blob([JSON.stringify(payload)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`PereHUB_Backup_${new Date().toISOString().slice(0,10)}.perehub`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}catch(e){alert('Não consegui criar o backup: '+e.message)}}
+    async function restoreSite(event){const file=event.target.files[0];if(!file)return;try{const backup=JSON.parse(await file.text());if(backup.format!=='PereHUB Backup'||!Array.isArray(backup.media))throw new Error('Esse arquivo não parece ser um backup PereHUB válido.');for(const m of backup.media){if(!m.id||!m.data)continue;await put({id:m.id,title:m.title||m.name||'Sem título',name:m.name||'arquivo',type:m.type==='video'?'video':'image',created:Number(m.created)||Date.now(),blob:base64ToBlob(m.data,m.mime)})}media=(await getAll()).sort((a,b)=>b.created-a.created);if(Array.isArray(backup.playlists)){playlists=backup.playlists;savePlaylists()}if(backup.notes&&typeof backup.notes==='object'){notes=backup.notes;localStorage.setItem('perehub_notes',JSON.stringify(notes))}if(Array.isArray(backup.savedIdeas)){savedIdeaIds=new Set(backup.savedIdeas);localStorage.setItem('perehub_saved_ideas',JSON.stringify([...savedIdeaIds]))}if(Array.isArray(backup.customIdeas)){customIdeas=backup.customIdeas;localStorage.setItem('perehub_custom_ideas',JSON.stringify(customIdeas))}render();renderPlaylists();renderIdeas();alert('Backup restaurado com sucesso!')}catch(e){alert('Não consegui restaurar: '+e.message)}finally{event.target.value=''}}
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeUpload();closeIdeaForm();closeViewer()}});
     init();
   </script>
 </body>
