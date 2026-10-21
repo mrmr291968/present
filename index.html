@@ -1,413 +1,116 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PereHUB</title>
-<style>
-:root{--bg:#09090b;--panel:#151519;--panel2:#1d1d22;--pink:#ff2b8a;--pink2:#ff65ad;--text:#fff;--muted:#aaa;--line:#303038}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
-button,input,select{font:inherit}
-button{cursor:pointer}
-.header{height:64px;background:#0e0e11;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 18px;gap:22px;position:sticky;top:0;z-index:20}
-.logo{font-size:25px;font-weight:900}.logo b{color:var(--pink)}
-.sidebar{display:flex;gap:5px}.sidebtn{padding:9px 12px;border-radius:8px;color:#ddd;background:transparent;border:1px solid transparent}.sidebtn:hover,.sidebtn.active{background:var(--panel2);border-color:var(--line)}.ghost{background:transparent;color:#ddd;border:1px solid var(--line);padding:9px 13px;border-radius:8px}
-.nav button:hover,.ghost:hover{background:var(--panel2)}
-.user{margin-left:auto;color:var(--muted)}
-main{max-width:1250px;margin:auto;padding:24px}
-.hero{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:24px}
-.hero h1{margin:0;font-size:30px}.hero p{color:var(--muted)}
-.pink{border:0;background:var(--pink);color:white;font-weight:bold;padding:11px 16px;border-radius:8px}
-.pink:hover{background:var(--pink2)}
-.toolbar{display:flex;gap:10px;margin-bottom:18px}
-input,select{background:var(--panel);color:white;border:1px solid var(--line);padding:12px;border-radius:8px;outline:none}
-#search{flex:1}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.thumb{height:155px;background:#030303;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.thumb img,.thumb video{width:100%;height:100%;object-fit:cover}
-.body{padding:11px}.title{font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.meta{font-size:12px;color:var(--muted);margin-top:5px}
-.actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}.actions button{background:transparent;color:#ddd;border:1px solid var(--line);border-radius:7px;padding:7px 9px;font-size:12px}
-.empty{text-align:center;color:var(--muted);padding:50px;grid-column:1/-1}
-.modal,.viewer{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:50;display:flex;align-items:center;justify-content:center;padding:20px}
-.modalbox{width:min(440px,100%);background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px}
-.modalbox input{width:100%;margin:8px 0}
-.modalbox button{margin:5px 4px 0 0}
-.viewer{flex-direction:column}.viewer img,.viewer video{max-width:95vw;max-height:80vh}
-.close{position:absolute;right:20px;top:10px;background:transparent;color:white;border:0;font-size:42px}
-.viewer h2{font-size:18px}
-.playlists{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
-.playlist{background:var(--panel);border:1px solid var(--line);padding:16px;border-radius:10px}
-.playlist h3{margin-top:0}
-[hidden]{display:none!important}
-@media(max-width:650px){
- .header{padding:0 10px}.nav{display:none}.user{display:none}main{padding:14px}
- .hero h1{font-size:24px}.hero{align-items:flex-start}
- .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.thumb{height:115px}
- .body{padding:9px}.toolbar select{width:105px}
-}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#100d16">
+  <title>PereHUB — fotos nossas</title>
+  <style>
+    :root{color-scheme:dark;--bg:#100d16;--panel:#191520;--panel2:#211b2b;--line:#342a3b;--text:#fff8fc;--muted:#b8aebb;--pink:#ff5c9a;--pink2:#ff8ab6;--violet:#a78bfa;--good:#86efac;--shadow:0 18px 55px #0006}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 15% -15%,#512641 0,transparent 40%),radial-gradient(ellipse at 100% 5%,#30234c 0,transparent 33%),var(--bg);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--pink2);outline-offset:2px}.topbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:24px;padding:14px clamp(16px,4vw,48px);background:#100d16dd;border-bottom:1px solid #ffffff12;backdrop-filter:blur(18px)}.brand{display:flex;align-items:center;gap:10px;color:var(--text);font-size:21px;font-weight:850;letter-spacing:-.7px}.brand-mark{display:grid;place-items:center;width:36px;height:36px;border-radius:12px;background:linear-gradient(140deg,var(--pink),#bb68e8);box-shadow:0 5px 22px #ff5c9a55}.brand b{color:var(--pink2)}.nav{display:flex;gap:5px}.nav button,.iconbtn,.secondary{border:1px solid transparent;background:transparent;color:var(--muted);border-radius:11px;padding:9px 12px;transition:.18s}.nav button:hover,.nav button.active,.secondary:hover,.iconbtn:hover{background:var(--panel2);border-color:var(--line);color:var(--text)}.top-actions{margin-left:auto;display:flex;align-items:center;gap:8px}.local-pill{font-size:12px;color:var(--good);border:1px solid #86efac3a;background:#86efac10;padding:6px 10px;border-radius:99px}.main{width:min(1180px,100%);margin:auto;padding:34px clamp(16px,4vw,42px) 64px}.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin:8px 0 26px}.eyebrow{margin:0 0 5px;color:var(--pink2);font-size:12px;font-weight:750;letter-spacing:1.6px;text-transform:uppercase}.hero h1{margin:0;font-size:clamp(28px,4vw,42px);line-height:1.1;letter-spacing:-1.5px}.hero p{max-width:540px;margin:10px 0 0;color:var(--muted)}.primary{border:0;border-radius:12px;padding:12px 17px;background:linear-gradient(135deg,var(--pink),#df54bd);color:white;font-weight:750;box-shadow:0 8px 25px #ff5c9a32;transition:transform .18s,filter .18s}.primary:hover{filter:brightness(1.09);transform:translateY(-1px)}.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:18px}.search-wrap{position:relative;flex:1}.search-wrap span{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted)}.search-wrap input,.toolbar select,.field{width:100%;border:1px solid var(--line);border-radius:12px;background:#191520dc;color:var(--text);padding:11px 13px}.search-wrap input{padding-left:40px}.toolbar select{width:auto;min-width:150px}.stats{display:flex;align-items:center;gap:10px;margin:0 0 16px;color:var(--muted);font-size:13px}.stats strong{color:var(--text)}.dot{width:4px;height:4px;border-radius:50%;background:#766879}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}.card{overflow:hidden;border:1px solid #ffffff12;border-radius:16px;background:linear-gradient(160deg,#201a29,#17131d);box-shadow:0 8px 25px #0002;transition:transform .2s,border-color .2s,box-shadow .2s}.card:hover{transform:translateY(-3px);border-color:#ff8ab655;box-shadow:var(--shadow)}.thumb{position:relative;display:grid;place-items:center;height:175px;overflow:hidden;background:linear-gradient(135deg,#2a2030,#131119)}.thumb img,.thumb video{width:100%;height:100%;object-fit:cover}.kind{position:absolute;left:10px;top:10px;padding:5px 9px;border:1px solid #ffffff24;border-radius:99px;background:#100d16bb;color:white;font-size:11px;backdrop-filter:blur(8px)}.fav{position:absolute;right:10px;top:10px;width:34px;height:34px;border:1px solid #ffffff30;border-radius:50%;background:#100d16bb;color:white;font-size:17px}.fav.on{color:#ff76a8}.card-body{padding:13px}.title{overflow:hidden;margin:0;font-weight:750;text-overflow:ellipsis;white-space:nowrap}.meta{margin-top:3px;color:var(--muted);font-size:12px}.card-actions{display:flex;gap:7px;margin-top:12px}.card-actions button{flex:1;border:1px solid var(--line);border-radius:9px;padding:7px 8px;background:#ffffff05;color:#eee6ef;font-size:12px}.card-actions button:hover{background:#ffffff10}.card-actions .delete:hover{border-color:#fb7185;color:#fda4af}.empty{grid-column:1/-1;padding:56px 20px;border:1px dashed #544458;border-radius:16px;text-align:center;color:var(--muted)}.empty .emoji{font-size:34px}.empty h2{margin:8px 0 3px;color:var(--text);font-size:19px}.empty p{margin:0}.playlist-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:15px}.playlist{padding:17px;border:1px solid #ffffff14;border-radius:15px;background:#1a1521}.playlist-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.playlist h3{margin:0;font-size:17px}.playlist .meta{margin-top:5px}.playlist-items{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}.playlist-items button{max-width:100%;overflow:hidden;border:1px solid var(--line);border-radius:9px;background:#ffffff07;color:#f7eefa;padding:7px 9px;text-overflow:ellipsis;white-space:nowrap}.playlist-items button:hover{border-color:#ff8ab655}.modal,.viewer{position:fixed;inset:0;z-index:30;display:grid;place-items:center;padding:18px;background:#08060ddd;backdrop-filter:blur(9px)}[hidden]{display:none!important}.modalbox{width:min(480px,100%);padding:22px;border:1px solid #ffffff20;border-radius:18px;background:linear-gradient(145deg,#241b2b,#17131d);box-shadow:var(--shadow)}.modalbox h2{margin:0 0 5px}.modalbox>p{margin:0 0 16px;color:var(--muted);font-size:13px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.drop{display:grid;place-items:center;min-height:135px;margin:14px 0;border:1px dashed #765a74;border-radius:13px;background:#ffffff04;text-align:center;color:var(--muted);padding:15px}.drop strong{display:block;color:var(--text)}.drop input{max-width:100%;margin-top:10px}.field{margin-top:10px}.viewer{display:flex;flex-direction:column;gap:12px}.viewer img,.viewer video{max-width:min(94vw,1100px);max-height:78vh;border-radius:14px;box-shadow:var(--shadow)}.viewer h2{max-width:90vw;margin:0;text-align:center;font-size:17px}.close{position:absolute;top:13px;right:18px;width:44px;height:44px;border:1px solid #ffffff25;border-radius:50%;background:#191520;color:white;font-size:28px}.notice{margin-top:38px;padding:13px 15px;border:1px solid #ffffff12;border-radius:12px;color:var(--muted);font-size:12px}.notice strong{color:#e9dce9}
+    @media(max-width:700px){.topbar{gap:10px;padding:10px 13px;flex-wrap:wrap}.brand{font-size:19px}.nav{order:3;width:100%;overflow:auto}.nav button{flex:1;white-space:nowrap;padding:8px 9px}.top-actions{gap:4px}.local-pill{display:none}.top-actions .secondary{padding:8px}.main{padding-top:24px}.hero{align-items:flex-start;flex-direction:column}.toolbar{flex-wrap:wrap}.search-wrap{flex-basis:100%}.toolbar select{flex:1}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.thumb{height:132px}.card-body{padding:10px}.card-actions button{padding:7px 4px;font-size:11px}.title{font-size:14px}}
+    @media(max-width:390px){.grid{grid-template-columns:1fr}.thumb{height:190px}.top-actions .secondary{font-size:12px}}
+  </style>
+  <style>
+    /* Acabamento mais simples, com jeito de álbum feito por nós. */
+    body{background:#111014;color:#f5eef2}
+    .topbar{background:#111014ed;backdrop-filter:blur(10px)}
+    .brand-mark{border-radius:50%;background:#e85b8f;box-shadow:none}
+    .primary{background:#e85b8f;box-shadow:none;border-radius:9px}
+    .primary:hover{background:#f071a0}
+    .card{border-radius:10px;background:#1b191e;box-shadow:none}
+    .card:hover{transform:translateY(-2px);border-color:#825268;box-shadow:none}
+    .thumb{background:#17151a}
+    .hero h1{font-family:Georgia,serif;font-weight:500;letter-spacing:-.6px}
+    .eyebrow{letter-spacing:.4px;text-transform:none;font-weight:600}
+    .note-text{margin:8px 0 0;color:#e9bfd0;font-family:Georgia,serif;font-size:13px;font-style:italic;overflow-wrap:anywhere}
+    .hero-buttons{display:flex;gap:8px;flex-wrap:wrap}
+    @media(max-width:700px){.hero-buttons{width:100%}.hero-buttons button{flex:1}}
+  </style>
 </head>
 <body>
-
-<header class="header">
-  <div class="logo">Pere<b>HUB</b></div>
-  <aside class="sidebar">
-    <button class="sidebtn active" onclick="setFilter('all');showPage('home');this.blur()">🏠 Início</button>
-    <button class="sidebtn" onclick="setFilter('video');showPage('home');this.blur()">🎬 Vídeos</button>
-    <button class="sidebtn" onclick="setFilter('image');showPage('home');this.blur()">🖼️ Fotos</button>
-    <button class="sidebtn" onclick="showPage('playlists');this.blur()">📁 Playlists</button>
-  </aside>
-  <span class="user" id="userText"></span>
-  <button class="ghost" id="backupBtn" onclick="backupSite()">💾 Backup</button>
-  <button class="ghost" onclick="closeSite()">Fechar</button>
-</header>
-
-<main>
-<section id="home">
-  <div class="hero">
-    <div>
-      <h1>Minha biblioteca</h1>
-      <p>Fotos e vídeos organizados em um só lugar.</p>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">♡</span><span>Pere<b>HUB</b></span></div>
+    <nav class="nav" aria-label="Navegação">
+      <button id="nav-all" class="active" onclick="showPage('home','all')">⌂ Início</button>
+      <button id="nav-video" onclick="showPage('home','video')">▷ Vídeos</button>
+      <button id="nav-image" onclick="showPage('home','image')">▧ Fotos</button>
+      <button id="nav-fav" onclick="showPage('home','favorites')">♡ Favoritos</button>
+      <button id="nav-playlists" onclick="showPage('playlists')">▤ Playlists</button>
+    </nav>
+    <div class="top-actions">
+      <span class="local-pill">● Salvo neste aparelho</span>
+      <button class="secondary" onclick="importBackup()" title="Restaurar backup">↥ Restaurar</button>
+      <button class="secondary" onclick="backupSite()" title="Baixar backup">↧ Backup</button>
     </div>
-    <button class="pink" onclick="openUpload()">＋ Adicionar mídia</button>
+  </header>
+
+  <main class="main">
+    <section id="home">
+      <div class="hero">
+        <div><p class="eyebrow">PereHUB · só a gente</p><h1>Fotos nossas ♡</h1><p>Um lugarzinho pra guardar as coisas boas.</p></div>
+        <div class="hero-buttons"><button class="secondary" onclick="randomMemory()">🎲 Me surpreende</button><button class="primary" onclick="openUpload()">＋ Guardar foto ou vídeo</button></div>
+      </div>
+      <div class="toolbar">
+        <label class="search-wrap"><span>⌕</span><input id="search" type="search" placeholder="Buscar por nome…" oninput="render()" aria-label="Buscar mídia"></label>
+        <select id="sort" onchange="render()" aria-label="Ordenar mídias"><option value="newest">Mais recentes</option><option value="oldest">Mais antigas</option><option value="az">Nome A–Z</option></select>
+      </div>
+      <div id="stats" class="stats"></div>
+      <div id="grid" class="grid"></div>
+    </section>
+    <section id="playlistsPage" hidden>
+      <div class="hero"><div><p class="eyebrow">PereHUB · coleções</p><h1>Playlists</h1><p>Junte os favoritos em um só lugar.</p></div><button class="primary" onclick="newPlaylist()">＋ Nova playlist</button></div>
+      <div id="playlistGrid" class="playlist-grid"></div>
+    </section>
+    <div class="notice"><strong>Privacidade:</strong> os arquivos ficam neste navegador e aparelho. Use <em>Backup</em> para guardar uma cópia; o site não envia as mídias para a internet.</div>
+  </main>
+
+  <div id="uploadModal" class="modal" hidden>
+    <form class="modalbox" onsubmit="event.preventDefault();saveMedia()">
+      <h2>Adicionar à biblioteca</h2><p>Escolha uma foto ou vídeo e dê um nome para encontrar depois.</p>
+      <label class="drop"><span><strong>Escolher arquivo</strong>Imagem ou vídeo do seu aparelho<input id="file" type="file" accept="image/*,video/*" required></span></label>
+      <input id="title" class="field" maxlength="120" placeholder="Nome (opcional)" aria-label="Nome da mídia">
+      <div class="modal-actions"><button type="button" class="secondary" onclick="closeUpload()">Cancelar</button><button class="primary" type="submit">Salvar mídia</button></div>
+    </form>
   </div>
 
-  <div class="toolbar">
-    <input id="search" placeholder="Pesquisar por nome..." oninput="render()">
-    <select id="filter" onchange="render()">
-      <option value="all">Tudo</option>
-      <option value="video">Vídeos</option>
-      <option value="image">Fotos</option>
-    </select>
+  <div id="viewer" class="viewer" hidden role="dialog" aria-modal="true" aria-label="Visualizador de mídia">
+    <button class="close" onclick="closeViewer()" aria-label="Fechar">×</button><div id="viewerContent"></div><h2 id="viewerTitle"></h2>
   </div>
+  <input id="restoreInput" type="file" accept=".perehub,application/json" hidden onchange="restoreSite(event)">
 
-  <div id="grid" class="grid"></div>
-</section>
-
-<section id="playlists" hidden>
-  <div class="hero">
-    <div><h1>Playlists</h1><p>Organize seus vídeos e fotos.</p></div>
-    <button class="pink" onclick="newPlaylist()">＋ Nova playlist</button>
-  </div>
-  <div id="playlistGrid" class="playlists"></div>
-</section>
-</main>
-
-<div id="uploadModal" class="modal" hidden>
-  <div class="modalbox">
-    <h2>Adicionar mídia</h2>
-    <input id="file" type="file" accept="image/*,video/*">
-    <input id="title" placeholder="Nome da mídia">
-    <button class="pink" onclick="saveMedia()">Salvar</button>
-    <button class="ghost" onclick="closeUpload()">Cancelar</button>
-  </div>
-</div>
-
-<div id="viewer" class="viewer" hidden>
-  <button class="close" onclick="closeViewer()">×</button>
-  <div id="viewerContent"></div>
-  <h2 id="viewerTitle"></h2>
-</div>
-
-<input id="restoreInput" type="file" accept=".perehub,.zip" hidden onchange="restoreSite(event)">
-<script>
-/*
-  PEREHUB - versão somente index.html
-
-  Os dados ficam no localStorage e os arquivos ficam no IndexedDB.
-  Isso permite abrir o index.html diretamente no navegador.
-  Como é HTML puro, os arquivos NÃO são sincronizados automaticamente
-  entre computadores/celulares diferentes.
-*/
-
-const DB_NAME="PereHUB_DB", STORE="media";
-let db;
-let media=[];
-let playlists=JSON.parse(localStorage.getItem("perehub_playlists")||"[]");
-
-function openDB(){
- return new Promise((resolve,reject)=>{
-  const req=indexedDB.open(DB_NAME,1);
-  req.onupgradeneeded=e=>e.target.result.createObjectStore(STORE,{keyPath:"id"});
-  req.onsuccess=e=>{db=e.target.result;resolve()};
-  req.onerror=()=>reject(req.error);
- });
-}
-function getAll(){
- return new Promise((resolve,reject)=>{
-  const req=db.transaction(STORE,"readonly").objectStore(STORE).getAll();
-  req.onsuccess=()=>resolve(req.result.sort((a,b)=>b.created-a.created));
-  req.onerror=()=>reject(req.error);
- });
-}
-function put(item){
- return new Promise((resolve,reject)=>{
-  const req=db.transaction(STORE,"readwrite").objectStore(STORE).put(item);
-  req.onsuccess=resolve;req.onerror=()=>reject(req.error);
- });
-}
-function remove(id){
- return new Promise((resolve,reject)=>{
-  const req=db.transaction(STORE,"readwrite").objectStore(STORE).delete(id);
-  req.onsuccess=resolve;req.onerror=()=>reject(req.error);
- });
-}
-
-async function init(){
- await openDB();
- media=await getAll();
- render();
- renderPlaylists();
- document.getElementById("userText").textContent="Modo local";
-}
-function setFilter(v){document.getElementById("filter").value=v;render()}
-function showPage(page){
- document.getElementById("home").hidden=page!=="home";
- document.getElementById("playlists").hidden=page!=="playlists";
- if(page==="playlists")renderPlaylists();
-}
-function openUpload(){
- document.getElementById("uploadModal").hidden=false;
- document.getElementById("file").value="";
- document.getElementById("title").value="";
-}
-function closeUpload(){document.getElementById("uploadModal").hidden=true}
-
-async function saveMedia(){
- const file=document.getElementById("file").files[0];
- if(!file){alert("Escolha uma foto ou vídeo.");return}
- if(!file.type.startsWith("image/")&&!file.type.startsWith("video/")){
-  alert("Escolha uma imagem ou vídeo.");return
- }
- const title=document.getElementById("title").value.trim()||
- file.name.replace(/\.[^.]+$/,"")||"Sem título";
- await put({
-  id:crypto.randomUUID(),
-  title:title.slice(0,120),
-  name:file.name,
-  type:file.type.startsWith("video/")?"video":"image",
-  blob:file,
-  created:Date.now()
- });
- media=await getAll();
- closeUpload();
- render();
-}
-
-function render(){
- const q=document.getElementById("search").value.toLowerCase();
- const f=document.getElementById("filter").value;
- const list=media.filter(m=>
-  (f==="all"||m.type===f)&&
-  (m.title.toLowerCase().includes(q)||m.name.toLowerCase().includes(q))
- );
- const grid=document.getElementById("grid");
- grid.innerHTML="";
- if(!list.length){
-  grid.innerHTML='<div class="empty">Nenhuma mídia encontrada.</div>';return;
- }
- list.forEach(m=>{
-  const url=URL.createObjectURL(m.blob);
-  const card=document.createElement("article");card.className="card";
-  const thumb=document.createElement("div");thumb.className="thumb";
-  if(m.type==="video"){
-   const v=document.createElement("video");
-   v.src=url;v.muted=true;v.preload="metadata";thumb.appendChild(v);
-  }else{
-   const img=document.createElement("img");img.src=url;thumb.appendChild(img);
-  }
-  const body=document.createElement("div");body.className="body";
-  const title=document.createElement("div");title.className="title";title.textContent=m.title;
-  const meta=document.createElement("div");meta.className="meta";
-  meta.textContent=m.type==="video"?"Vídeo":"Foto";
-  const actions=document.createElement("div");actions.className="actions";
-
-  const open=document.createElement("button");open.textContent="Abrir";
-  open.onclick=()=>openViewer(m);
-  const add=document.createElement("button");add.textContent="+ Playlist";
-  add.onclick=()=>addToPlaylist(m.id);
-  const del=document.createElement("button");del.textContent="Apagar";
-  del.onclick=async()=>{
-   if(confirm("Apagar esta mídia?")){
-    await remove(m.id);media=await getAll();render();
-   }
-  };
-
-  actions.append(open,add,del);
-  body.append(title,meta,actions);card.append(thumb,body);grid.append(card);
- });
-}
-
-function openViewer(m){
- const url=URL.createObjectURL(m.blob);
- document.getElementById("viewerTitle").textContent=m.title;
- const c=document.getElementById("viewerContent");
- c.innerHTML="";
- if(m.type==="video"){
-  const v=document.createElement("video");
-  v.src=url;v.controls=true;v.autoplay=true;v.playsInline=true;c.appendChild(v);
- }else{
-  const img=document.createElement("img");img.src=url;c.appendChild(img);
- }
- document.getElementById("viewer").hidden=false;
-}
-function closeViewer(){
- document.getElementById("viewer").hidden=true;
- document.getElementById("viewerContent").innerHTML="";
-}
-
-function newPlaylist(){
- const name=prompt("Nome da playlist:");
- if(!name)return;
- playlists.push({id:crypto.randomUUID(),name:name.trim(),items:[]});
- localStorage.setItem("perehub_playlists",JSON.stringify(playlists));
- renderPlaylists();
-}
-function addToPlaylist(mediaId){
- if(!playlists.length){alert("Crie uma playlist primeiro.");return}
- const text=playlists.map((p,i)=>(i+1)+" - "+p.name).join("\n");
- const n=prompt("Escolha o número da playlist:\n\n"+text);
- const p=playlists[Number(n)-1];
- if(!p)return;
- if(!p.items.includes(mediaId))p.items.push(mediaId);
- localStorage.setItem("perehub_playlists",JSON.stringify(playlists));
- renderPlaylists();
- alert("Adicionado à playlist.");
-}
-function renderPlaylists(){
- const box=document.getElementById("playlistGrid");box.innerHTML="";
- if(!playlists.length){box.innerHTML='<div class="empty">Nenhuma playlist criada.</div>';return}
- playlists.forEach(p=>{
-  const el=document.createElement("div");el.className="playlist";
-  const h=document.createElement("h3");h.textContent=p.name;
-  const count=document.createElement("div");count.className="meta";count.textContent=p.items.length+" item(ns)";
-  el.append(h,count);
-  p.items.forEach(id=>{
-   const m=media.find(x=>x.id===id);if(!m)return;
-   const b=document.createElement("button");b.className="ghost";b.style.margin="7px 5px 0 0";b.textContent=m.title;
-   b.onclick=()=>openViewer(m);el.appendChild(b);
-  });
-  box.appendChild(el);
- });
-}
-function closeSite(){
- window.close();
- setTimeout(()=>{
-  document.body.innerHTML='<main style="padding:40px"><h1>PereHUB fechado</h1><p>O navegador pode bloquear o fechamento de uma aba aberta manualmente. Nesse caso, feche a aba normalmente.</p></main>';
- },300);
-}
-
-async function backupSite(){
-  try{
-    media=await getAll();
-    const payload={
-      format:"PereHUB Backup",
-      version:1,
-      createdAt:new Date().toISOString(),
-      playlists:playlists,
-      media:media.map(m=>({
-        id:m.id,title:m.title,name:m.name,type:m.type,created:m.created,
-        mime:m.blob.type,size:m.blob.size
-      }))
-    };
-
-    // A JSON manifest plus the actual media blobs are stored in a ZIP.
-    // This folder/ZIP can be kept and imported into a future version.
-    const zipParts=[];
-    zipParts.push("PereHUB_BACKUP_MANIFEST.json\n"+JSON.stringify(payload,null,2)+"\n\n");
-    for(const m of media){
-      const buf=await m.blob.arrayBuffer();
-      zipParts.push({name:"media/"+m.id+"_"+safeBackupName(m.name),data:new Uint8Array(buf)});
-    }
-
-    // Use the browser's CompressionStream when available.
-    // For maximum compatibility, create a portable backup as a .perehub JSON
-    // containing binary data encoded as base64.
-    const manifest={
-      format:"PereHUB Backup",
-      version:1,
-      createdAt:new Date().toISOString(),
-      playlists:playlists,
-      media:[]
-    };
-    for(const m of media){
-      manifest.media.push({
-        id:m.id,title:m.title,name:m.name,type:m.type,created:m.created,
-        mime:m.blob.type,size:m.blob.size,
-        data:await blobToBase64(m.blob)
-      });
-    }
-
-    const blob=new Blob([JSON.stringify(manifest)],{type:"application/json"});
-    const a=document.createElement("a");
-    a.href=URL.createObjectURL(blob);
-    a.download="PereHUB_Backup_"+new Date().toISOString().slice(0,10)+".perehub";
-    a.click();
-    setTimeout(()=>URL.revokeObjectURL(a.href),1000);
-  }catch(e){
-    alert("Não foi possível criar o backup: "+e.message);
-  }
-}
-
-function safeBackupName(name){
-  return String(name||"arquivo").replace(/[\\/:*?"<>|]/g,"_");
-}
-function blobToBase64(blob){
-  return new Promise((resolve,reject)=>{
-    const r=new FileReader();
-    r.onload=()=>resolve(String(r.result).split(",")[1]||"");
-    r.onerror=()=>reject(r.error);
-    r.readAsDataURL(blob);
-  });
-}
-function base64ToBlob(base64,mime){
-  const bin=atob(base64), arr=new Uint8Array(bin.length);
-  for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);
-  return new Blob([arr],{type:mime||"application/octet-stream"});
-}
-
-async function restoreSite(event){
-  const file=event.target.files[0];
-  if(!file)return;
-  try{
-    const text=await file.text();
-    const backup=JSON.parse(text);
-    if(backup.format!=="PereHUB Backup" || !Array.isArray(backup.media))
-      throw new Error("Arquivo de backup inválido.");
-
-    for(const m of backup.media){
-      await put({
-        id:m.id,title:m.title,name:m.name,type:m.type,
-        created:m.created,blob:base64ToBlob(m.data,m.mime)
-      });
-    }
-    playlists=Array.isArray(backup.playlists)?backup.playlists:[];
-    localStorage.setItem("perehub_playlists",JSON.stringify(playlists));
-    media=await getAll();
-    render();renderPlaylists();
-    alert("Backup restaurado! Agora você pode continuar usando esta versão do PereHUB.");
-  }catch(e){
-    alert("Não foi possível restaurar o backup: "+e.message);
-  }finally{
-    event.target.value="";
-  }
-}
-
-function importBackup(){
-  document.getElementById("restoreInput").click();
-}
-
-if(document.getElementById("backupBtn")){
-  const b=document.getElementById("backupBtn");
-  const r=document.createElement("button");
-  r.className="ghost"; r.textContent="↩ Restaurar";
-  r.onclick=importBackup;
-  b.parentNode.insertBefore(r,b.nextSibling);
-}
-init();
-</script>
+  <script>
+    const DB_NAME='PereHUB_DB', STORE='media', FAV_KEY='perehub_favorites';
+    let db, media=[], playlists=readJSON('perehub_playlists',[]), favorites=new Set(readJSON(FAV_KEY,[])), notes=readJSON('perehub_notes',{}), currentFilter='all', objectUrls=[];
+    function readJSON(key,fallback){try{const v=JSON.parse(localStorage.getItem(key)||'null');return v??fallback}catch{return fallback}}
+    function openDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open(DB_NAME,1);req.onupgradeneeded=e=>{const d=e.target.result;if(!d.objectStoreNames.contains(STORE))d.createObjectStore(STORE,{keyPath:'id'})};req.onsuccess=e=>{db=e.target.result;resolve()};req.onerror=()=>reject(req.error)})}
+    function transaction(mode,action){return new Promise((resolve,reject)=>{const tx=db.transaction(STORE,mode),req=action(tx.objectStore(STORE));req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)})}
+    const getAll=()=>transaction('readonly',s=>s.getAll()), put=item=>transaction('readwrite',s=>s.put(item)), remove=id=>transaction('readwrite',s=>s.delete(id));
+    async function init(){try{await openDB();media=(await getAll()).sort((a,b)=>b.created-a.created);render();renderPlaylists()}catch(e){console.error(e);alert('Não consegui abrir a biblioteca neste navegador. Tente abrir o arquivo no Chrome ou Edge.') }}
+    function clearUrls(){objectUrls.forEach(URL.revokeObjectURL);objectUrls=[]}
+    function makeUrl(blob){const url=URL.createObjectURL(blob);objectUrls.push(url);return url}
+    function showPage(page,filter='all'){document.getElementById('home').hidden=page!=='home';document.getElementById('playlistsPage').hidden=page!=='playlists';currentFilter=filter;document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));const id=page==='playlists'?'nav-playlists':filter==='video'?'nav-video':filter==='image'?'nav-image':filter==='favorites'?'nav-fav':'nav-all';document.getElementById(id).classList.add('active');if(page==='home')render();else renderPlaylists()}
+    function openUpload(){document.getElementById('uploadModal').hidden=false;document.getElementById('file').value='';document.getElementById('title').value='';document.getElementById('file').focus()}
+    function closeUpload(){document.getElementById('uploadModal').hidden=true}
+    async function saveMedia(){const file=document.getElementById('file').files[0];if(!file)return;if(!file.type.startsWith('image/')&&!file.type.startsWith('video/')){alert('Escolha uma imagem ou vídeo.');return}const title=document.getElementById('title').value.trim()||file.name.replace(/\.[^.]+$/,'')||'Sem título';await put({id:crypto.randomUUID(),title:title.slice(0,120),name:file.name,type:file.type.startsWith('video/')?'video':'image',blob:file,created:Date.now()});media=(await getAll()).sort((a,b)=>b.created-a.created);closeUpload();render()}
+    function render(){clearUrls();const q=document.getElementById('search').value.trim().toLocaleLowerCase('pt-BR');let list=media.filter(m=>(currentFilter==='all'||currentFilter==='favorites'||m.type===currentFilter)&&(currentFilter!=='favorites'||favorites.has(m.id))&&(m.title.toLocaleLowerCase('pt-BR').includes(q)||m.name.toLocaleLowerCase('pt-BR').includes(q)));const sort=document.getElementById('sort').value;if(sort==='oldest')list.sort((a,b)=>a.created-b.created);if(sort==='az')list.sort((a,b)=>a.title.localeCompare(b.title,'pt-BR'));const countPhotos=media.filter(m=>m.type==='image').length,countVideos=media.filter(m=>m.type==='video').length;document.getElementById('stats').innerHTML=`<strong>${media.length}</strong> ${media.length===1?'item':'itens'} <span class="dot"></span> ${countPhotos} ${countPhotos===1?'foto':'fotos'} <span class="dot"></span> ${countVideos} ${countVideos===1?'vídeo':'vídeos'}`;const grid=document.getElementById('grid');grid.replaceChildren();if(!list.length){const empty=document.createElement('div');empty.className='empty';empty.innerHTML='<div class="emoji">♡</div><h2>'+ (media.length?'Nada por aqui ainda':'Ainda tá vazio por aqui') +'</h2><p>'+ (media.length?'Tenta buscar por outro nome.':'Guarda a primeira foto ou vídeo quando quiser.') +'</p>';if(!media.length){const b=document.createElement('button');b.className='primary';b.style.marginTop='16px';b.textContent='＋ Escolher uma mídia';b.onclick=openUpload;empty.appendChild(b)}grid.appendChild(empty);return}list.forEach(m=>{const card=document.createElement('article');card.className='card';const thumb=document.createElement('div');thumb.className='thumb';const url=makeUrl(m.blob);if(m.type==='video'){const v=document.createElement('video');v.src=url;v.muted=true;v.preload='metadata';thumb.appendChild(v)}else{const img=document.createElement('img');img.src=url;img.alt=m.title;img.loading='lazy';thumb.appendChild(img)}const kind=document.createElement('span');kind.className='kind';kind.textContent=m.type==='video'?'▶ Vídeo':'▧ Foto';const fav=document.createElement('button');fav.className='fav'+(favorites.has(m.id)?' on':'');fav.textContent=favorites.has(m.id)?'♥':'♡';fav.title=favorites.has(m.id)?'Tirar dos favoritos':'Adicionar aos favoritos';fav.onclick=()=>toggleFavorite(m.id);thumb.append(kind,fav);const body=document.createElement('div');body.className='card-body';const title=document.createElement('p');title.className='title';title.textContent=m.title;title.title=m.title;const meta=document.createElement('div');meta.className='meta';meta.textContent=new Intl.DateTimeFormat('pt-BR',{dateStyle:'medium'}).format(new Date(m.created));const actions=document.createElement('div');actions.className='card-actions';const open=document.createElement('button');open.textContent='Abrir';open.onclick=()=>openViewer(m);const add=document.createElement('button');add.textContent='+ Playlist';add.onclick=()=>addToPlaylist(m.id);const memo=document.createElement('button');memo.textContent='✎ Recado';memo.onclick=()=>editNote(m.id);const del=document.createElement('button');del.className='delete';del.textContent='Apagar';del.onclick=()=>deleteMedia(m.id);actions.append(open,add,memo,del);body.append(title,meta);if(notes[m.id]){const note=document.createElement('p');note.className='note-text';note.textContent='“'+notes[m.id]+'”';body.appendChild(note)}body.append(actions);card.append(thumb,body);grid.appendChild(card)})}
+    function editNote(id){const current=notes[id]||'';const value=prompt('Deixa um recadinho pra essa lembrança:',current);if(value===null)return;const clean=value.trim().slice(0,180);if(clean)notes[id]=clean;else delete notes[id];localStorage.setItem('perehub_notes',JSON.stringify(notes));render()}
+    function randomMemory(){if(!media.length){alert('Ainda não tem nenhuma foto ou vídeo por aqui.');return}openViewer(media[Math.floor(Math.random()*media.length)])}
+    function toggleFavorite(id){favorites.has(id)?favorites.delete(id):favorites.add(id);localStorage.setItem(FAV_KEY,JSON.stringify([...favorites]));render()}
+    async function deleteMedia(id){if(!confirm('Apagar esta mídia da biblioteca?'))return;await remove(id);media=media.filter(m=>m.id!==id);favorites.delete(id);delete notes[id];localStorage.setItem(FAV_KEY,JSON.stringify([...favorites]));localStorage.setItem('perehub_notes',JSON.stringify(notes));playlists.forEach(p=>p.items=p.items.filter(i=>i!==id));savePlaylists();render();renderPlaylists()}
+    function openViewer(m){const c=document.getElementById('viewerContent');c.replaceChildren();const url=makeUrl(m.blob);if(m.type==='video'){const v=document.createElement('video');v.src=url;v.controls=true;v.autoplay=true;v.playsInline=true;c.appendChild(v)}else{const img=document.createElement('img');img.src=url;img.alt=m.title;c.appendChild(img)}document.getElementById('viewerTitle').textContent=m.title;document.getElementById('viewer').hidden=false}
+    function closeViewer(){const v=document.querySelector('#viewer video');if(v)v.pause();document.getElementById('viewer').hidden=true;document.getElementById('viewerContent').replaceChildren();clearUrls();render()}
+    function savePlaylists(){localStorage.setItem('perehub_playlists',JSON.stringify(playlists))}
+    function newPlaylist(){const name=prompt('Nome da playlist:');if(!name||!name.trim())return;playlists.push({id:crypto.randomUUID(),name:name.trim().slice(0,60),items:[]});savePlaylists();renderPlaylists()}
+    function addToPlaylist(id){if(!playlists.length){if(confirm('Você ainda não tem playlist. Criar uma agora?'))newPlaylist();if(!playlists.length)return}const text=playlists.map((p,i)=>`${i+1} — ${p.name}`).join('\n');const n=Number(prompt('Digite o número da playlist:\n\n'+text));const p=playlists[n-1];if(!p)return;if(!p.items.includes(id))p.items.push(id);savePlaylists();alert('Adicionado à playlist!')}
+    function renderPlaylists(){const box=document.getElementById('playlistGrid');box.replaceChildren();if(!playlists.length){box.innerHTML='<div class="empty"><div class="emoji">♡</div><h2>Nenhuma playlist ainda</h2><p>Crie uma para organizar seus momentos.</p></div>';return}playlists.forEach((p,index)=>{const el=document.createElement('article');el.className='playlist';const head=document.createElement('div');head.className='playlist-head';const copy=document.createElement('div');const h=document.createElement('h3');h.textContent=p.name;const meta=document.createElement('div');meta.className='meta';const items=(p.items||[]).map(id=>media.find(m=>m.id===id)).filter(Boolean);meta.textContent=`${items.length} ${items.length===1?'item':'itens'}`;copy.append(h,meta);const del=document.createElement('button');del.className='iconbtn';del.textContent='Apagar';del.onclick=()=>{if(confirm(`Apagar a playlist “${p.name}”?`)){playlists.splice(index,1);savePlaylists();renderPlaylists()}};head.append(copy,del);const row=document.createElement('div');row.className='playlist-items';if(!items.length){const none=document.createElement('span');none.className='meta';none.textContent='Adicione mídias pelo botão “+ Playlist”.';row.appendChild(none)}items.forEach(m=>{const b=document.createElement('button');b.textContent=m.title;b.title=m.title;b.onclick=()=>openViewer(m);row.appendChild(b)});el.append(head,row);box.appendChild(el)})}
+    function importBackup(){document.getElementById('restoreInput').click()}
+    function blobToBase64(blob){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result).split(',')[1]||'');r.onerror=()=>reject(r.error);r.readAsDataURL(blob)})}
+    function base64ToBlob(data,mime){const bin=atob(data),arr=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);return new Blob([arr],{type:mime||'application/octet-stream'})}
+    async function backupSite(){try{const entries=[];for(const m of media)entries.push({id:m.id,title:m.title,name:m.name,type:m.type,created:m.created,mime:m.blob.type,size:m.blob.size,data:await blobToBase64(m.blob)});const payload={format:'PereHUB Backup',version:1,createdAt:new Date().toISOString(),playlists,notes,media:entries};const blob=new Blob([JSON.stringify(payload)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`PereHUB_Backup_${new Date().toISOString().slice(0,10)}.perehub`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}catch(e){alert('Não consegui criar o backup: '+e.message)}}
+    async function restoreSite(event){const file=event.target.files[0];if(!file)return;try{const backup=JSON.parse(await file.text());if(backup.format!=='PereHUB Backup'||!Array.isArray(backup.media))throw new Error('Esse arquivo não parece ser um backup PereHUB válido.');for(const m of backup.media){if(!m.id||!m.data)continue;await put({id:m.id,title:m.title||m.name||'Sem título',name:m.name||'arquivo',type:m.type==='video'?'video':'image',created:Number(m.created)||Date.now(),blob:base64ToBlob(m.data,m.mime)})}media=(await getAll()).sort((a,b)=>b.created-a.created);if(Array.isArray(backup.playlists)){playlists=backup.playlists;savePlaylists()}if(backup.notes&&typeof backup.notes==='object'){notes=backup.notes;localStorage.setItem('perehub_notes',JSON.stringify(notes))}render();renderPlaylists();alert('Backup restaurado com sucesso!')}catch(e){alert('Não consegui restaurar: '+e.message)}finally{event.target.value=''}}
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeUpload();closeViewer()}});
+    init();
+  </script>
 </body>
 </html>
